@@ -1,28 +1,32 @@
 import pymysql
 
-ip = "92.53.96.245"
+import mysql.connector
+import os
 
-host = "vh338.timeweb.ru"
+#from mysql.connector import connect, Error
+from mysql.connector import Error
 
-user = "co83188"
+from dotenv import load_dotenv, find_dotenv
+import logging
 
-password = "1c2x3z4tOU"
 
-db_name = "co83188_garden"
+logger = logging.getLogger("logger_userDB")
+
+
+load_dotenv()
 
 
 try:
-    connection = pymysql.connect(
-        host=host,
-        port=3306,
-        user=user,
-        password=password,
-        database=db_name,
-        cursorclass=pymysql.cursors.DictCursor
-    )
+    logger.debug("Start connect")
 
-    print("\n\n !!!!!\n\n")
+    connection = mysql.connector.connect(
+            host = os.getenv("IP_HOST"),
+            user = os.getenv("USER"),
+            passwd = os.getenv("PASSWORD_HOST")
+        )
 
-except Exception as error:
-    print(error)
 
+    logger.debug("Connect OK")
+
+except Error as error:
+    logger.error(f"Error:  {error}")
