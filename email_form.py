@@ -26,10 +26,8 @@ def parser_message(message) -> str:
     return string
 
 
-# TODO: Ошибка: объект 'NoneType' не имеет атрибута 'encode'
 
-
-def send_email(message, action : str = None, email_address: str = "drakonde@gmail.com") -> None:
+def send_email(message, action : str = None, email_address: str = os.getenv("EMAIL")) -> None:
     """_summary_
 
     Args:
@@ -41,7 +39,7 @@ def send_email(message, action : str = None, email_address: str = "drakonde@gmai
 
         sender = os.getenv("EMAIL")
         
-        password = os.getenv("PASWORD_EMAIL")  # сгенерированный пароль
+        password = os.getenv("PASSWORD_EMAIL")  # сгенерированный пароль
     
         server = smtplib.SMTP("smtp.gmail.com", 587)
 
@@ -63,7 +61,8 @@ def send_email(message, action : str = None, email_address: str = "drakonde@gmai
  
             msg["Subject"] = "Клиент задал вопрос"
                        
-            msg.attach(MIMEText(text_of_the_letter)) 
+            msg.attach(MIMEText(text_of_the_letter))
+
             
         elif action == "certificate" or action == "price":
             logger.debug(f"action:  {action}")
