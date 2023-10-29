@@ -1,14 +1,10 @@
 import re
 import email_form
 import logging
+from datetime import datetime
 
 
-#logging.basicConfig(level = logging.DEBUG)
 logger = logging.getLogger("logger_parser")
-
-#logging.getLogger("urllib3").setLevel(logging.ERROR)
-#logging.getLogger("aiogram").setLevel(logging.ERROR)
-#logging.getLogger("asyncio").setLevel(logging.ERROR)
 
 
 
@@ -67,38 +63,38 @@ def parser(message) -> tuple:
     reg = re.compile(r"[\w\.-]+@[\w\.-]+(?:\.[\w]+)+")
     email = reg.findall(string)
     
-    logger.debug(f"email: {email}")
+    logger.debug(f"{datetime.now()}: email: {email}")
     
     if quest:
-        logger.debug("quest")
+        logger.debug(f"{datetime.now()}: quest")
         
         email_form.send_email(message, action = "quest")
         
         quest = False
         
-        return (TEXT_QUEST, False, False)
+        return TEXT_QUEST
      
     elif certificate and email:
-        logger.debug("certificate")
+        logger.debug(f"{datetime.now()}: certificate")
         
         email_form.send_email(message, action = "certificate", email_address = email[0]) 
         
         certificate = False
         
-        return (TEXT_ANSWER_EMAIL, False, False)
+        return TEXT_ANSWER_EMAIL
    
     elif price and email:
-        logger.debug("price")
+        logger.debug(f"{datetime.now()}: price")
         
         email_form.send_email(message, action = "price", email_address = email[0])
         
         price = False
         
-        return (TEXT_ANSWER_EMAIL, False, False)
+        return TEXT_ANSWER_EMAIL
         
         
 
-    logger.debug("answer")
+    logger.debug(f"{datetime.now()}: answer")
     
     answer = ""
     
@@ -114,20 +110,10 @@ def parser(message) -> tuple:
         answer += CONTACTS
         text_is_parsed = True
         
-    if "cert" in arr:
-        certificate = False
-           
-        return ("Вот один из сертификатов на нашу продукцию: \n", True, False)
-    
-    if "price" in arr:
-        price = False
-          
-        return ("Вот прайс-лист на нашу продукцию: \n", False, True)
-        
     if not text_is_parsed:
         answer = TEXT_NO_IS_PARSER
     
-    return (answer, False, False)
+    return answer
 
 
 

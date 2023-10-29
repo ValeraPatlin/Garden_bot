@@ -6,6 +6,7 @@ import smtplib
 import os
 from dotenv import load_dotenv, find_dotenv
 import logging
+from datetime import datetime
 
 
 logger = logging.getLogger("logger_email")
@@ -15,13 +16,13 @@ load_dotenv()
 
 
 def parser_message(message) -> str:
-    logger.debug("parser_message")
+    logger.debug(f"{datetime.now()}: parser_message")
     
     string = f"\n\nИмя: \t\t {message.first_name} \n" 
     string += f"Фамилия: \t {message.last_name} \n"
     string += f"логин: \t\t {message.username} \n"
 
-    logger.debug(string)
+    logger.debug(f"{datetime.now()}: string: {string}")
 
     return string
 
@@ -35,7 +36,7 @@ def send_email(message, action : str = None, email_address: str = os.getenv("EMA
     """
     
     try:
-        logger.debug("Preparation email")
+        logger.debug(f"{datetime.now()}: Preparation email")
 
         sender = os.getenv("EMAIL")
         
@@ -52,12 +53,12 @@ def send_email(message, action : str = None, email_address: str = os.getenv("EMA
         msg["To"] = email_address
       
         if action == "quest":
-            logger.debug("quest")
+            logger.debug(f"{datetime.now()}: quest")
 
             text_of_the_letter = message.text
             text_of_the_letter += parser_message(message.from_user)
 
-            logger.debug(text_of_the_letter)
+            logger.debug(f"{datetime.now()}: quest: {text_of_the_letter}")
  
             msg["Subject"] = "Клиент задал вопрос"
                        
@@ -65,7 +66,7 @@ def send_email(message, action : str = None, email_address: str = os.getenv("EMA
 
             
         elif action == "certificate" or action == "price":
-            logger.debug(f"action:  {action}")
+            logger.debug(f"{datetime.now()}: action:  {action}")
             
             if action == "certificate":
                 msg["Subject"] = "Сертификат на продукцию"
@@ -96,7 +97,7 @@ def send_email(message, action : str = None, email_address: str = os.getenv("EMA
         server.sendmail(sender, email_address, msg.as_string())
         server.quit()
         
-        logger.debug("Email sent")
+        logger.debug(f"{datetime.now()}: Email sent")
       
     except Exception as _error:
-        logger.error(f"Error: \t {_error}")
+        logger.error(f"{datetime.now()}: Error: \t {_error}")
