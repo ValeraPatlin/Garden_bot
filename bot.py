@@ -195,10 +195,7 @@ async def price_command_messege(message: types.Message):
 
 
 
-# pears
-# apple
-# cherries
-
+# -----------------------------------------------------------------------------------
 
 @dispatcher.message_handler(commands = ["pears"])
 async def pears_command_messege(message: types.Message):
@@ -217,13 +214,6 @@ async def pears_command_messege(message: types.Message):
             await message.reply(text = command.ERROR_COMMAND,
                                 reply_markup = keyboard_main)
         
-
-
-# DEBUG:logger_userDB:2023-10-29 16:24:00.121870: Start connect DB appel 
-# DEBUG:logger_userDB:2023-10-29 16:24:00.724060: Data: [(1, 'Анис алый', 2000), (2, 'Сахарный Мирон', 2500), (3, 'Кандиль орловский', 1900), (4, 'Брусничное', 1900)]
-# ERROR:logger_userDB:2023-10-29 16:24:00.724550: Error: output_of_indicators='hign'
-# ERROR:asyncio:Task exception was never retrieved       
-
 
 
 @dispatcher.message_handler(commands = ["apple"])
@@ -261,8 +251,6 @@ async def cherries_command_messege(message: types.Message):
         else:
             await message.reply(text = command.ERROR_COMMAND,
                                 reply_markup = keyboard_main)
-
-
 
 #  ----------------------------------------------------------------------
 
@@ -302,9 +290,8 @@ async def custom_command_messege(message: types.Message):
     if not message.from_user.is_bot:
         recording_actions_user("custom")
         
-        await message.reply(text = command.TAVAR_COMMAND, 
-                            reply_markup = keyboard_category)
-        
+        await message.reply(text = command.RANGE_COMMAND)
+
         usersDB.output_of_indicators = "custom"
         
         await message.delete()
@@ -325,10 +312,6 @@ async def history_command_messege(message: types.Message):
 
 
 # -------------------------
-#
-#/low — вывод минимальных показателей (с изображением товара/услуги/и так далее);
-#
-#/high — вывод максимальных (с изображением товара/услуги/и так далее);
 #
 #/custom — вывод показателей пользовательского диапазона (с изображением товара/услуги/и так далее);
 #
@@ -358,7 +341,15 @@ async def user_message_text(message: types.Message):
         
         string = parser_text.parser(message)
         
-        await message.answer(string, reply_markup = keyboard_main)
+        if usersDB.output_of_indicators == "custom":
+            usersDB.number_list = string
+            
+            await message.answer(text = command.TAVAR_COMMAND, 
+                                reply_markup = keyboard_category)
+            
+        else:      
+            await message.answer(text = string, 
+                                reply_markup = keyboard_main)
         
           
 
@@ -372,4 +363,4 @@ def bot_start():
         executor.start_polling(dispatcher, on_startup = on_startup, skip_updates = True)
         
     except Exception as error:
-        logger.error(f"{datetime.now()}: Error: \t {error}")
+        logger.error(f"{datetime.now()}: Error: \t {error} \n")

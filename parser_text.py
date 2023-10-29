@@ -1,5 +1,6 @@
 import re
 import email_form
+import usersDB
 import logging
 from datetime import datetime
 
@@ -49,10 +50,19 @@ def checking_list_word(list_one: list, list_two: list) -> bool:
     return False
 
 
-def parser(message) -> tuple:
+def parser(message):
     """
+    Функция для распарисвания текста от пользователя
+    """
+    
+    if usersDB.output_of_indicators == "custom":
+        req = re.compile(r"\b[0123456789]\d+")
 
-    """
+        number_list = req.findall(message.text)
+        
+        return number_list
+    
+    
     text_is_parsed = False
     
     global quest, certificate, price

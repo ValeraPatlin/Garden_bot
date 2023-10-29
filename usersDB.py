@@ -145,25 +145,48 @@ def high_sort_array(arr: list) -> list:
 
 
 
-def custom_sort_array(arr: list) -> list:
-    result = list()    
+def custom_sort_array(arr: list, begin: int = 0, end: int = 0) -> list:
+    result, custom_list = list(), list()    
     elem, index = None, None
+    
+    custom_list = [i for i in arr if begin <= i[2] <= end]
 
-    for _ in range(len(arr)):
-        num = arr[0][2]
+    for _ in range(len(custom_list)):
+        num = custom_list[0][2]
         
-        for i in arr:
+        for i in custom_list:
             if num >= i[2]:
                 num = i[2]
                 elem = i
-                index = arr.index(i)
-                
-        result.append(elem)
-        arr.pop(index)
+                index = custom_list.index(i)
+        
+        if elem:            
+            result.append(elem)
+            custom_list.pop(index)
         
     logger.debug(f"{datetime.now()}: Data: {result}")    
     
     return result
+
+
+
+
+def foo(arr: list) ->tuple: # доделать !!!!!!
+    begin, end = 0, 0    
+
+    if len(arr) > 1:
+        begin = int(arr[0])
+        end = int(arr[1])
+
+        if begin > end:
+            begin, end = end, begin
+         
+    else:
+        end = int(arr[0])
+        
+    return (begin, end)
+
+
 
 
 
@@ -185,6 +208,13 @@ def sort_array(arr: list) -> list:
         output_of_indicators = None
         
         if number_list:
+            
+            tu = foo(number_list)
+
+            print(tu)   # туе изменить
+
+            res = custom_sort_array(arr, tu[0], tu[1])
+            
             return custom_sort_array(arr)
         
         return None
