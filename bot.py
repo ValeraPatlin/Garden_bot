@@ -321,19 +321,6 @@ async def history_command_messege(message: types.Message):
 
 
 
-
-
-
-# -------------------------
-#
-#/history — вывод истории запросов пользователей.
-
-
-
-
-
-
-
 @dispatcher.message_handler()
 async def user_message_text(message: types.Message):
     if not message.from_user.is_bot:
@@ -362,10 +349,6 @@ async def user_message_text(message: types.Message):
             await message.answer(text = string, 
                                 reply_markup = keyboard_main)
         
-          
-
-
-
 
 
 def bot_start():
