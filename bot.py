@@ -34,7 +34,7 @@ keyboard_main.insert(KeyboardButton("/price"))
 keyboard_main.add(KeyboardButton("/low"))
 keyboard_main.insert(KeyboardButton("/high"))
 keyboard_main.insert(KeyboardButton("/custom"))
-keyboard_main.add(KeyboardButton("/lohistoryw"))
+keyboard_main.add(KeyboardButton("/history"))
 
 # создаём клавиатуру
 keyboard_category = ReplyKeyboardMarkup(resize_keyboard = True, one_time_keyboard = True)
@@ -52,6 +52,13 @@ keyboard_email.add(KeyboardButton("/telegram"))
 
 
 def text_messege(arr : list) -> str:
+    """
+    Args:
+        arr (list): _description_
+
+    Returns:
+        str: _description_
+    """
     if arr:
         string = ""
                     
@@ -66,12 +73,6 @@ def text_messege(arr : list) -> str:
  
 
 
-async def recording_actions_user(action : str) -> None:
-    """ Запись комманд в базу данных """
-    pass
-
-
-
 async def on_startup(_):
     logger.debug(f"{datetime.now()}: Start dot ")
     
@@ -79,9 +80,7 @@ async def on_startup(_):
 
 @dispatcher.message_handler(commands = ["start"])
 async def start_command_messege(message: types.Message):
-    if not message.from_user.is_bot:
-        recording_actions_user("start")
-         
+    if not message.from_user.is_bot:  
         await bot.send_sticker(message.from_id, 
                                sticker = command.STICEKER_HELLO,
                                reply_markup = keyboard_main)
@@ -90,13 +89,18 @@ async def start_command_messege(message: types.Message):
         await message.delete()
         
         email_form.send_email(message)
+        
+        usersDB.insert_DB_users(message.from_user)
+        
+
+        
 
 
 
 @dispatcher.message_handler(commands = ["help", "hh"])
 async def help_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("help")
+        usersDB.update_data_user("help", message.from_user.username)
         
         await message.reply(text = command.HELP_COMMAND, parse_mode = "HTML")
         await message.delete()
@@ -106,7 +110,7 @@ async def help_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["website"])
 async def website_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("website")
+        usersDB.update_data_user("website", message.from_user.username)
         
         await message.reply(text = command.WEBSITE)
 
@@ -115,7 +119,7 @@ async def website_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["address"])
 async def address_command_message(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("address")
+        usersDB.update_data_user("address", message.from_user.username)
         
         await bot.send_location(chat_id = message.from_user.id, 
                                 latitude = 59.658649, longitude = 30.119442)
@@ -125,7 +129,7 @@ async def address_command_message(message: types.Message):
 @dispatcher.message_handler(commands = ["email"])
 async def email_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("email")
+        usersDB.update_data_user("email", message.from_user.username)
         
         await message.reply(text = command.EMAIL_COMMAND)
         
@@ -135,7 +139,7 @@ async def email_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["telegram"])
 async def telegram_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("telegram")
+        usersDB.update_data_user("telegram", message.from_user.username)
         
         if parser_text.certificate:
             parser_text.certificate = False
@@ -166,7 +170,7 @@ async def telegram_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["question"])
 async def question_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("question")
+        usersDB.update_data_user("question", message.from_user.username)
         
         await message.reply(text = command.QUESTION_COMMAND)
         parser_text.quest = True
@@ -176,7 +180,7 @@ async def question_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["certificate"])
 async def certificate_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("certificate")
+        usersDB.update_data_user("certificate", message.from_user.username)
         
         await message.reply(text = command.CERTIFICATE_COMMAND,
                             reply_markup = keyboard_email)
@@ -187,7 +191,7 @@ async def certificate_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["price"])
 async def price_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("price")
+        usersDB.update_data_user("price", message.from_user.username)
         
         await message.reply(text = command.PRICE_COMMAND, 
                             reply_markup = keyboard_email)
@@ -200,7 +204,7 @@ async def price_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["pears"])
 async def pears_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("pears")
+        usersDB.update_data_user("pears", message.from_user.username)
         
         answer = usersDB.connect_DB_table("pears")
         
@@ -219,7 +223,7 @@ async def pears_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["apple"])
 async def apple_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("apple")
+        usersDB.update_data_user("apple", message.from_user.username)
         
         answer = usersDB.connect_DB_table("apple")
 
@@ -238,7 +242,7 @@ async def apple_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["cherries"])
 async def cherries_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("cherries")
+        usersDB.update_data_user("cherries", message.from_user.username)
         
         answer = usersDB.connect_DB_table("cherries")
         
@@ -259,7 +263,7 @@ async def cherries_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["low"])
 async def low_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("low")
+        usersDB.update_data_user("low", message.from_user.username)
 
         await message.reply(text = command.TAVAR_COMMAND, 
                             reply_markup = keyboard_category)
@@ -273,8 +277,7 @@ async def low_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["high"])
 async def high_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("high")
-        
+        usersDB.update_data_user("high", message.from_user.username)       
         
         await message.reply(text = command.TAVAR_COMMAND, 
                             reply_markup = keyboard_category)
@@ -288,7 +291,7 @@ async def high_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["custom"])
 async def custom_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("custom")
+        usersDB.update_data_user("custom", message.from_user.username)
         
         await message.reply(text = command.RANGE_COMMAND)
 
@@ -301,9 +304,19 @@ async def custom_command_messege(message: types.Message):
 @dispatcher.message_handler(commands = ["history"])
 async def history_command_messege(message: types.Message):
     if not message.from_user.is_bot:
-        recording_actions_user("history")
+        usersDB.update_data_user("history", message.from_user.username)
         
-        pass
+        string = usersDB.history_command_messege(message.from_user.username)
+        
+        if string:
+        
+            await message.reply(text = string,
+                                    reply_markup = keyboard_main)
+            
+        else:
+            await message.reply(text = command.ERROR_COMMAND,
+                                reply_markup = keyboard_main)
+        
         await message.delete()
 
 
@@ -312,8 +325,6 @@ async def history_command_messege(message: types.Message):
 
 
 # -------------------------
-#
-#/custom — вывод показателей пользовательского диапазона (с изображением товара/услуги/и так далее);
 #
 #/history — вывод истории запросов пользователей.
 
