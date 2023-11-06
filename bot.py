@@ -325,18 +325,6 @@ async def history_command_messege(message: types.Message):
 async def user_message_text(message: types.Message):
     if not message.from_user.is_bot:
         
-        # -------------------------------------------------------------------
-        # удалить
-        with open("user_text.txt", "a", encoding = "utf-8") as file:
-            file.write(message.text + "\n")
-            file.write(str(message.from_id))        
-            file.write("\n")
-            file.write(str(message.from_user))
-            file.write("\n")
-        
-        # -------------------------------------------------------------------------
-        
-        
         string = parser_text.parser(message)
         
         if usersDB.output_of_indicators == "custom":
